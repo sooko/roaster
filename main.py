@@ -70,19 +70,22 @@ class Ml(FloatLayout):
     toast_eror=StringProperty("")
     state_btn_save=DictProperty({})
     hop=NumericProperty(0)
-    read_thread=ObjectProperty(None)
+    # read_thread=ObjectProperty(None)
     uart=Uart()
     data_out=StringProperty("")
     loger={}
     loged={}
     line_et=[]
     line_bt=[]
-
+    line_f=[]
+    # line_fb=[]
+    # line_etb=[]
+    # line_btb=[]
     count=NumericProperty(0)
     storage_num=StringProperty("")
     storage_num_save=StringProperty("")
     plot_area=ObjectProperty(None)
-
+    l_ror=ListProperty([])
     def __init__(self,*args,**kwargs):
         super(Ml,self).__init__(*args,**kwargs)
         Clock.schedule_interval(self.delay,1)
@@ -101,13 +104,57 @@ class Ml(FloatLayout):
                 i.warna=l[i.text] 
         except:
             pass
+    def start(self,status):
+        if status==1:
+            self.loger.clear()
+            self.count=0
+            self.ids.chart.line5.clear()
+            self.ids.chart.line6.clear()
+            self.line_bt.clear()
+            self.line_et.clear()
+            self.detik=0
+            self.menit=0
+            self.second=0
+            self.waktu="{:02d}:{:02d}:{:02d}".format(self.menit,self.detik,self.second)
+            self.protokol[0]=1
+            self.protokol[2]=1
+            self.protokol[9]=self.et*10
+            self.protokol[10]=self.bt*10
+            if self.protokol[1]==1:
+                if "00:00:00" in self.loged:
+                    l=self.loged["00:00:00"]
+                    li=l[1:-2].split(",")
+                    liint=[int(i) for i in li]
+                    liint[1]=1
+                    self.protokol=liint
+        else:
+            self.protokol[0]=0
+            self.protokol[2]=0
     def on_reset(self):
         self.protokol=[0,0,0,0,0,0,0,0,0,0,0,0]
+        self.loger.clear()
+        self.count=0
+        
+        
+        
+        self.waktu="{:02d}:{:02d}:{:02d}".format(self.menit,self.detik,self.second)
+        self.protokol[9]=self.et*10
+        self.protokol[10]=self.bt*10
         self.detik=0
         self.menit=0
         self.second=0
-        self.count=0
-        self.waktu="{:02d}:{:02d}:{:02d}".format(self.menit,self.detik,self.second)
+        self.line_bt=[]
+        self.line_et=[]
+        
+        self.ids.chart.line1=[]
+        self.ids.chart.line2=[]
+        self.ids.chart.line3=[]
+        
+        self.ids.chart.line4=[]
+        self.ids.chart.line5=[]
+        self.ids.chart.line6=[]
+
+        
     def do_save(self):
         if self.protokol[0]==0 and self.waktu!="00:00:00":
             self.ids.root_save.ilang=.5
@@ -134,7 +181,10 @@ class Ml(FloatLayout):
         json.dump({"loger":self.loger,
                     "line_et":self.line_et,
                     "line_bt":self.line_bt,
-                    "end":self.waktu
+                    "end":self.waktu,
+                    "line_et":self.line_et,
+                    "line_bt":self.line_bt,
+                    "line_f":self.line_f
                     },f)
         f.close()
         self.ids.root_save.ilang=10
@@ -146,7 +196,13 @@ class Ml(FloatLayout):
             l=json.load(f)
             self.end=l["end"]
             self.loged=l["loger"]
+            self.ids.chart.line1=l["line_et"]
+            self.ids.chart.line2=l["line_bt"]
+            self.ids.chart.line3=l["line_f"]
+            
+            
         self.ids.root_load.ilang=10
+    
     def on_data(self):
         l=self.uart.readbaris.split(",")
         self.et=int(l[2])/10
@@ -155,13 +211,13 @@ class Ml(FloatLayout):
             self.start_time("manual")
         if self.protokol[0]==1 and self.protokol[1]==1 and int(l[4])==1:
             self.start_time("auto")
-        if self.protokol[0]==1 and self.protokol[1]==1 and int(l[4])==0:
-            if "00:00:00" in self.loged:
-                l=self.loged["00:00:00"]
-                li=l[1:-2].split(",")
-                liint=[int(i) for i in li]
-                liint[1]=1
-                self.protokol=liint
+        # if self.protokol[0]==1 and self.protokol[1]==1 and int(l[4])==0:
+        #     if "00:00:00" in self.loged:
+        #         l=self.loged["00:00:00"]
+        #         li=l[1:-2].split(",")
+        #         liint=[int(i) for i in li]
+        #         liint[1]=1
+        #         self.protokol=liint
         
     def start_time(self,mode):
         if self.menit<20:
@@ -182,8 +238,9 @@ class Ml(FloatLayout):
                     liint[1]=1
                     self.protokol=liint
                 if self.waktu==self.end:
-                    self.protokol[0]=0
+                    # self.protokol[0]=0
                     print("finish")
+                    self.protokol=[0,1,0,0,0,0,0,0,0,0,0,0]
             except:
                 pass
         if mode=="manual":
@@ -196,37 +253,50 @@ class Ml(FloatLayout):
         self.uart.write(self.data_out)
         if self.protokol[1]==0 and self.protokol[0]==1: #start manual mode
             self.loger[self.waktu]=self.data_out
-    def start(self,status):
-        if status==1:
-            self.loger.clear()
-            self.count=0
-            
-            self.detik=0
-            self.menit=0
-            self.second=0
-            self.waktu="{:02d}:{:02d}:{:02d}".format(self.menit,self.detik,self.second)
-            self.protokol[0]=1
-            self.protokol[2]=1
-            self.protokol[9]=int(self.et*10)
-            self.protokol[10]=int(self.bt*10)
-        else:
-            self.protokol[0]=0
-            self.protokol[2]=0
+        if self.line_f==[] and self.protokol[9]==1:
+            self.make_line_f()
+    def make_line_f(self):
+        pa=self.ids.chart.plot_area
+        self.line_f=[pa.x+pa.width*self.count/20/60,pa.y,pa.x+pa.width*self.count/20/60,pa.y+pa.height]
+        self.ids.chart.line4=self.line_f#[pa.x+pa.width*self.count/20/60,pa.y,pa.x+pa.width*self.count/20/60,pa.y+pa.height]
+    
     def send(self,data):
         pass
-
-
     def on_detik(self,a,b):
         self.count+=1
         chart=self.ids.chart
-        plot_area=self.ids.chart.plot_area
-        # xy=[]
-        # self.line_et+=[]
-        # chart.line1+=[self.count,self.et]
-        
-
+        pa=self.ids.chart.plot_area
+        point_et=[pa.x+pa.width*self.count/20/60,pa.y+pa.height*self.et/300]
+        point_bt=[pa.x+pa.width*self.count/20/60,pa.y+pa.height*self.bt/300]
+        self.line_bt+=point_bt
+        self.line_et+=point_et
+        chart.line5=self.line_bt
+        chart.line6=self.line_et
+                
+    def stopapp(self):
+        self.uart.hop=1
+    def on_menit(self,a,b):
+        self.l_ror.append(self.bt)
+        if len(self.l_ror)==2:
+            self.ror=self.l_ror[1]-self.l_ror[0]
+            self.l_ror.remove(self.l_ror[0])
 class Roaster(App):
+    ml=Ml()
     def build(self):
-        return Ml()
+        return self.ml
+    def on_stop(self):
+        self.ml.stopapp()
 if __name__=="__main__":
     Roaster().run()
+
+
+
+
+
+
+
+
+
+
+
+
