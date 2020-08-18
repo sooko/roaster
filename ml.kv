@@ -1,0 +1,309 @@
+
+<BoxVer@BoxLayout>:
+    orientation:"vertical"
+<Tg@ToggleButton>:
+    id:tg
+    status:0
+    background_color:0,0,0,0
+    value:"MANUAL"
+    canvas.before:
+        Color:
+            rgba:1,1,1,1
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    on_state:
+        self.value="MANUAL" if self.state=="normal" else "AUTO"
+        root.status=1 if self.state=="down" else 0
+    on_status:
+        root.state="down" if self.status==1 else "normal"
+    LabelDisplay
+        name:"MODE"
+        color:0,0,0,1
+        pos:tg.pos
+        size:tg.size
+        value:root.value
+<BtnSave@Button>:
+    color:0,0,0,1
+    warna:1,1,1,1
+    font_size:self.height/2
+    background_color:0,0,0,0
+    canvas.before:
+        Color:
+            rgba:root.warna
+        Rectangle:  
+            size:self.size
+            pos:self.pos
+    on_press:self.warna=.31,.31,.31,1
+<BtnLoad@Button>:
+    color:0,0,0,1
+    warna:1,1,1,1
+    font_size:self.height/2
+    background_color:0,0,0,0
+    canvas.before:
+        Color:
+            rgba:root.warna
+        Rectangle:  
+            size:self.size
+            pos:self.pos
+
+<Ml>:
+    BoxVer
+        spacing:dp(1)
+        BoxLayout
+            spacing:dp(1)
+            id:top_nav
+            size_hint:1,.15
+            Tg
+                status:root.protokol[1]
+                on_status:root.protokol[1]=self.status
+                
+
+            Logo:
+                size_hint:None,1
+                width:top_nav.width/4
+            LabelDisplay:
+                name:"RoR"
+                size_hint:.8,1
+                value:"{:.1f}".format(root.ror)
+            LabelDisplay:
+                value:"{:.1f}".format(root.et)
+                size_hint:.8,1
+                name:"ET"
+            LabelDisplay:
+                value:"{:.1f}".format(root.bt)
+                name:"BT"
+                size_hint:.8,1
+            LabelDisplay:
+                name:"TIMER"
+                value:"{:02d}:{:02d}".format(int(root.menit),int(root.detik))
+        BoxLayout:
+            spacing:dp(1)
+            Chart
+                id:chart
+            BoxVer
+                size_hint:.167,1
+                id:ctrl
+                spacing:dp(1)
+                TgImg
+                    source:"img/play off.png" if self.state=="down" else "img/play on.png"
+                    
+                    on_status:
+                        root.start(self.status)
+                        
+                        
+
+                        
+
+                    status:root.protokol[0]
+                    name:"play"
+                TgImg
+                    type:"push"
+                    source:"img/reset.png"
+                    name:"reset"
+                    on_press:
+                        root.state=0
+                        root.on_reset()
+                TgImg
+                    type:"push"
+                    source:"img/save.png"
+                    name:"save"
+                    on_press:root.do_save()
+                    Label:
+                        color:0,0,0,1
+                        text:"{}  ".format(root.storage_num_save)
+                        size:self.parent.size[0],self.parent.size[1]
+                        pos:self.parent.pos
+                        font_size:self.height/4
+                        halign:"right"
+                        valign:"top"
+                        text_size:self.size
+                TgImg
+                    type:"push"
+                    source:"img/load.png"
+                    name:"load"
+                    on_press:root.do_load()
+                    Label:
+                        color:0,0,0,1
+                        text:"{}  ".format(root.storage_num)
+                        size:self.parent.size[0],self.parent.size[1]
+                        pos:self.parent.pos
+                        font_size:self.height/4
+                        halign:"right"
+                        valign:"top"
+                        text_size:self.size
+                TgImg:
+                    id:first
+                    name:"first"
+                    source:"img/first.png"
+                    on_status:
+                        root.protokol[9]=self.status    
+                    status:root.protokol[9] 
+        BoxLayout
+            size_hint:1,.15
+            spacing:dp(1)
+            id:root_ctrl
+            TgImg:
+                id:charge
+                name:"charge"
+                source:"img/charge off.png" if self.status==1 else "img/charge on.png"
+                on_status:root.protokol[2]=self.status  
+                status:root.protokol[2] 
+            TgImg:
+                id:drum
+                name:"drum"
+                source:"img/drum off.png" if self.status==1 else "img/drum on.png"
+                on_status:root.protokol[3]=self.status   
+                status:root.protokol[3] 
+            TgImg:
+                id:heater1
+
+                name:"heater1"
+                source:"img/heater1 off.png" if self.status==1 else "img/heater1 on.png"
+                on_status:root.protokol[4]=self.status    
+                status:root.protokol[4] 
+            TgImg:
+                id:heater2
+                name:"heater2"
+                on_status:root.protokol[5]=self.status    
+                source:"img/heater2 off.png" if self.status==1 else "img/heater2 on.png"
+                status:root.protokol[5] 
+            BtnStep:
+                id:airflow
+                name:"airflow"
+                source:"img/airflow{}.png".format(self.status)
+                on_status:root.protokol[6]=self.status    
+                status:root.protokol[6] 
+            TgImg:
+                id:discharge
+                name:"discharge"
+                source:"img/discharge off.png" if self.status==1 else "img/discharge on.png"
+                on_status:root.protokol[7]=self.status    
+                status:root.protokol[7] 
+            TgImg:  
+                id:cooling
+                source:"img/cooling off.png" if self.status==1 else "img/cooling on.png"
+                on_status:root.protokol[8]=self.status    
+                status:root.protokol[8] 
+                
+
+    FloatLayout:
+        ilang:10
+        id:root_save
+        pos_hint:{"center_x":.5,"center_y":self.ilang}
+        Button
+            pos_hint:{"center_x":.5,"center_y":.5}
+            background_color:0,0,0,.8
+            on_press:root_save.ilang=10
+        BoxVer
+            pos_hint:{"center_x":.5,"center_y":.5}
+            size_hint:.5,.5
+            padding:5
+            spacing:2
+            canvas:
+                Color:
+                    rgba:0,0,0,1
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos[0],self.pos[1]-.5
+            BtnSave
+                size_hint:1,.2
+                text:"SAVE"
+                font_size:self.height/1.5
+                color:0,0,0,1
+            GridLayout
+                spacing:2
+                cols:3
+                id:grid_save
+                BtnSave
+                    text:"1"
+                    id:save1
+                    on_release:root.save(self.text)
+                BtnSave
+                    text:"2"
+                    id:save2
+                    on_release:root.save(self.text)
+                BtnSave
+                    text:"3"
+                    id:save3
+                    on_release:root.save(self.text)
+                BtnSave
+                    text:"4"
+                    id:save4
+                    on_release:root.save(self.text)
+                BtnSave
+                    text:"5"
+                    id:save5
+                    on_release:root.save(self.text)
+                BtnSave
+                    text:"6"
+                    on_release:root.save(self.text)
+                    id:save6
+                
+    FloatLayout:
+        ilang:10
+        id:root_load
+        pos_hint:{"center_x":.5,"center_y":self.ilang}
+        Button
+            pos_hint:{"center_x":.5,"center_y":.5}
+            background_color:0,0,0,.8
+            on_press:root_load.ilang=10
+        BoxVer
+            pos_hint:{"center_x":.5,"center_y":.5}
+            size_hint:.5,.5
+            padding:5
+            spacing:2
+            canvas:
+                Color:
+                    rgba:0,0,0,1
+                RoundedRectangle:
+                    size:self.size
+                    pos:self.pos[0],self.pos[1]-.5
+            BtnSave
+                size_hint:1,.2
+                text:"LOAD"
+                font_size:self.height/1.5
+                color:0,0,0,1
+            GridLayout
+                spacing:2
+                cols:3
+                BtnLoad
+                    text:"1"
+                    warna:save1.warna
+                    on_press:root.load(self.text,self.warna)
+                BtnLoad
+                    text:"2"
+                    warna:save2.warna
+                    on_press:root.load(self.text,self.warna)
+                BtnLoad
+                    text:"3"
+                    warna:save3.warna
+                    on_press:root.load(self.text,self.warna)
+                BtnLoad
+                    text:"4"
+                    on_press:root.load(self.text,self.warna)
+                    warna:save4.warna
+                BtnLoad
+                    text:"5"
+                    on_press:root.load(self.text,self.warna)
+                    warna:save5.warna
+                BtnLoad
+                    on_press:root.load(self.text,self.warna)
+                    text:"6"
+                    warna:save6.warna
+
+    Label:
+        warna:0,0,0,0
+        color:1,1,1,.8
+        id:toastlabel
+        size_hint:None,None
+        size:self.texture_size[0],self.texture_size[1]    #.4,.05
+        pos_hint:{"center_x":.5,"center_y":.3}
+        text:root.toast_eror
+        # font_size:self.texture_size[1]
+        canvas.before:
+            Color:
+                rgba:self.warna
+            RoundedRectangle:
+                size:self.texture_size[0]+dp(50),self.texture_size[1]+dp(5)
+                pos:self.pos[0]-dp(25),self.pos[1]-dp(2)

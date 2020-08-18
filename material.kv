@@ -1,0 +1,48 @@
+
+<BoxVer@BoxLayout>:
+    orientation:"vertical"
+<LabelDisplay@BoxVer>:
+    color:0,0,0,1
+    canvas.before:
+        Color:
+            rgba:1,1,1,1
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    name:"ET"
+    value:""
+    Label:
+        size_hint:1,.5
+        text:root.name
+        color:root.color
+        font_size:self.height/1.2
+        bold:True
+    Label:
+        text:root.value
+        color:root.color
+        font_size:self.height/1.2
+
+<Logo@Image>:
+    canvas.before:
+        Color:
+            rgba:1,1,1,1
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    source:"img/logo.png"    
+
+
+<TgImg>:
+    canvas.before:
+        Color:
+            rgba:root.bg_rgba
+        Rectangle:
+            size:self.size
+            pos:self.pos
+<BtnStep>:
+    canvas.before:
+        Color:
+            rgba:1,1,1,1
+        Rectangle:
+            size:self.size
+            pos:self.pos
