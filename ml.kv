@@ -136,10 +136,12 @@
                     id:first
                     name:"first"
                     source:"img/first.png"
+                    # disabed:self.status==1
                     on_status:
                         root.protokol[9]=self.status   
                         # if self.status==1:root.make_line_f() 
                     status:root.protokol[9] 
+                    
         BoxLayout
             size_hint:1,.15
             spacing:dp(1)
@@ -240,6 +242,7 @@
                     text:"6"
                     on_release:root.save(self.text)
                     id:save6
+
                 
     FloatLayout:
         ilang:10

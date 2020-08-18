@@ -106,12 +106,14 @@ class Ml(FloatLayout):
             pass
     def start(self,status):
         if status==1:
+            
             self.loger.clear()
             self.count=0
             self.ids.chart.line5.clear()
             self.ids.chart.line6.clear()
             self.line_bt.clear()
             self.line_et.clear()
+            self.line_f=[]
             self.detik=0
             self.menit=0
             self.second=0
@@ -130,6 +132,7 @@ class Ml(FloatLayout):
         else:
             self.protokol[0]=0
             self.protokol[2]=0
+            self.ids.first.disabled=False
     def on_reset(self):
         self.protokol=[0,0,0,0,0,0,0,0,0,0,0,0]
         self.loger.clear()
@@ -145,15 +148,14 @@ class Ml(FloatLayout):
         self.second=0
         self.line_bt=[]
         self.line_et=[]
-        
+        self.line_f=[]
         self.ids.chart.line1=[]
         self.ids.chart.line2=[]
         self.ids.chart.line3=[]
-        
         self.ids.chart.line4=[]
         self.ids.chart.line5=[]
         self.ids.chart.line6=[]
-
+        self.ids.first.disabled=False
         
     def do_save(self):
         if self.protokol[0]==0 and self.waktu!="00:00:00":
@@ -199,8 +201,6 @@ class Ml(FloatLayout):
             self.ids.chart.line1=l["line_et"]
             self.ids.chart.line2=l["line_bt"]
             self.ids.chart.line3=l["line_f"]
-            
-            
         self.ids.root_load.ilang=10
     
     def on_data(self):
@@ -255,11 +255,11 @@ class Ml(FloatLayout):
             self.loger[self.waktu]=self.data_out
         if self.line_f==[] and self.protokol[9]==1:
             self.make_line_f()
+            self.ids.first.disabled=True
     def make_line_f(self):
         pa=self.ids.chart.plot_area
         self.line_f=[pa.x+pa.width*self.count/20/60,pa.y,pa.x+pa.width*self.count/20/60,pa.y+pa.height]
         self.ids.chart.line4=self.line_f#[pa.x+pa.width*self.count/20/60,pa.y,pa.x+pa.width*self.count/20/60,pa.y+pa.height]
-    
     def send(self,data):
         pass
     def on_detik(self,a,b):
