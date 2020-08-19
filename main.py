@@ -126,9 +126,13 @@ class Ml(FloatLayout):
                 if "00:00:00" in self.loged:
                     l=self.loged["00:00:00"]
                     li=l[1:-2].split(",")
-                    liint=[int(i) for i in li]
+                    print("li")
+                    lifloat=[float(i) for i in li]
+                    liint=[int(i) for i in lifloat]
+                    
                     liint[1]=1
                     self.protokol=liint
+
         else:
             self.protokol[0]=0
             self.protokol[2]=0
@@ -137,12 +141,9 @@ class Ml(FloatLayout):
         self.protokol=[0,0,0,0,0,0,0,0,0,0,0,0]
         self.loger.clear()
         self.count=0
-        
-        
-        
         self.waktu="{:02d}:{:02d}:{:02d}".format(self.menit,self.detik,self.second)
-        self.protokol[9]=self.et*10
-        self.protokol[10]=self.bt*10
+        # self.protokol[9]=self.et*10
+        # self.protokol[10]=self.bt*10
         self.detik=0
         self.menit=0
         self.second=0
@@ -211,14 +212,6 @@ class Ml(FloatLayout):
             self.start_time("manual")
         if self.protokol[0]==1 and self.protokol[1]==1 and int(l[4])==1:
             self.start_time("auto")
-        # if self.protokol[0]==1 and self.protokol[1]==1 and int(l[4])==0:
-        #     if "00:00:00" in self.loged:
-        #         l=self.loged["00:00:00"]
-        #         li=l[1:-2].split(",")
-        #         liint=[int(i) for i in li]
-        #         liint[1]=1
-        #         self.protokol=liint
-        
     def start_time(self,mode):
         if self.menit<20:
             self.second+=1
@@ -234,7 +227,9 @@ class Ml(FloatLayout):
                 if self.waktu in self.loged:
                     l=self.loged[self.waktu]
                     li=l[1:-2].split(",")
-                    liint=[int(i) for i in li]
+                    lifloat=[float(i) for i in li]
+                    liint=[int(i) for i in lifloat]
+                    
                     liint[1]=1
                     self.protokol=liint
                 if self.waktu==self.end:
