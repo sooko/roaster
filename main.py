@@ -117,7 +117,6 @@ class Ml(FloatLayout):
             self.menit=0
             self.second=0
             self.waktu="{:02d}:{:02d}:{:02d}".format(self.menit,self.detik,self.second)
-            
             self.protokol[9]=self.et*10
             self.protokol[10]=self.bt*10
             self.protokol[0]=1
