@@ -26,7 +26,7 @@
 
 <BtnSave@Button>:
     color:0,0,0,1
-    warna:1,1,1,1
+    warna:.31,.31,.31,1
     font_size:self.height/2
     background_color:0,0,0,0
     canvas.before:
@@ -35,10 +35,10 @@
         Rectangle:  
             size:self.size
             pos:self.pos
-    on_press:self.warna=.31,.31,.31,1
+    on_press:self.warna=1,1,1,1
 <BtnLoad@Button>:
     color:0,0,0,1
-    warna:1,1,1,1
+    warna:31,.31,.31,1
     font_size:self.height/2
     background_color:0,0,0,0
     canvas.before:
@@ -57,7 +57,9 @@
             size_hint:1,.125
             Tg
                 status:root.protokol[1]
-                on_status:root.protokol[1]=self.status
+                on_status:
+                    root.protokol[1]=self.status
+                    root.send()
                 size_hint:.7,1
 
             Logo:
@@ -138,6 +140,7 @@
                     source:"img/first.png"
                     on_status:
                         root.protokol[9]=self.status   
+                        root.send()
                     status:root.protokol[9] 
                     
         BoxLayout
@@ -148,43 +151,57 @@
                 id:charge
                 name:"charge"
                 source:"img/charge off.png" if self.status==1 else "img/charge on.png"
-                on_status:root.protokol[2]=self.status  
+                on_status:
+                    root.protokol[2]=self.status  
+                    root.send()
                 status:root.protokol[2] 
             TgImg:
                 id:drum
                 name:"drum"
                 source:"img/drum off.png" if self.status==1 else "img/drum on.png"
-                on_status:root.protokol[3]=self.status   
+                on_status:
+                    root.protokol[3]=self.status   
+                    root.send()
                 status:root.protokol[3] 
             TgImg:
                 id:heater1
 
                 name:"heater1"
                 source:"img/heater1 off.png" if self.status==1 else "img/heater1 on.png"
-                on_status:root.protokol[4]=self.status    
+                on_status:
+                    root.protokol[4]=self.status    
+                    root.send()
                 status:root.protokol[4] 
             TgImg:
                 id:heater2
                 name:"heater2"
-                on_status:root.protokol[5]=self.status    
+                on_status:
+                    root.protokol[5]=self.status   
+                    root.send() 
                 source:"img/heater2 off.png" if self.status==1 else "img/heater2 on.png"
                 status:root.protokol[5] 
             BtnStep:
                 id:airflow
                 name:"airflow"
                 source:"img/airflow{}.png".format(self.status)
-                on_status:root.protokol[6]=self.status    
+                on_status:
+                    root.protokol[6]=self.status  
+                    root.send()  
                 status:root.protokol[6] 
             TgImg:
                 id:discharge
                 name:"discharge"
                 source:"img/discharge off.png" if self.status==1 else "img/discharge on.png"
-                on_status:root.protokol[7]=self.status    
+                on_status:
+                    root.protokol[7]=self.status  
+                    root.send()  
                 status:root.protokol[7] 
             TgImg:  
                 id:cooling
                 source:"img/cooling off.png" if self.status==1 else "img/cooling on.png"
-                on_status:root.protokol[8]=self.status    
+                on_status:
+                    root.protokol[8]=self.status   
+                    root.send() 
                 status:root.protokol[8] 
                 
 
@@ -212,6 +229,7 @@
                 text:"SAVE"
                 font_size:self.height/1.5
                 color:0,0,0,1
+                warna:1,1,1,1
             GridLayout
                 spacing:2
                 cols:3
@@ -266,6 +284,7 @@
                 text:"LOAD"
                 font_size:self.height/1.5
                 color:0,0,0,1
+                warna:1,1,1,1
             GridLayout
                 spacing:2
                 cols:3

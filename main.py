@@ -28,13 +28,13 @@ class TgImg(ToggleButtonBehavior,AsyncImage):
         self.color=[0,0,0,1]
     def on_state(self,a,b):
         if self.state=="down":
-            self.color=[1,1,1,1]
+            # self.color=[1,1,1,1]
             self.status=1
             self.bg_rgba=[.7,.7,.7,1]
         else:
             self.status=0
             self.bg_rgba=[1,1,1,1]
-            self.color=[0,0,0,1]
+            # self.color=[0,0,0,1]
     def on_status(self,a,b):
         if self.status==1:
             self.state="down"
@@ -93,7 +93,7 @@ class Ml(FloatLayout):
         self.uart.ok=self.on_data
         self.list_p=[]
     def delay(self,dt):
-        self.ids.chart.major_y=14
+        self.ids.chart.major_y=15
         self.ids.chart.major_x=20
         self.plot_area=self.ids.chart.plot_area
         
@@ -106,7 +106,6 @@ class Ml(FloatLayout):
             pass
     def start(self,status):
         if status==1:
-            
             self.loger.clear()
             self.count=0
             self.ids.chart.line5.clear()
@@ -118,10 +117,11 @@ class Ml(FloatLayout):
             self.menit=0
             self.second=0
             self.waktu="{:02d}:{:02d}:{:02d}".format(self.menit,self.detik,self.second)
-            self.protokol[0]=1
-            self.protokol[2]=1
+            
             self.protokol[9]=self.et*10
             self.protokol[10]=self.bt*10
+            self.protokol[0]=1
+            self.protokol[2]=1
             if self.protokol[1]==1:
                 if "00:00:00" in self.loged:
                     l=self.loged["00:00:00"]
@@ -129,14 +129,19 @@ class Ml(FloatLayout):
                     print("li")
                     lifloat=[float(i) for i in li]
                     liint=[int(i) for i in lifloat]
-                    
                     liint[1]=1
                     self.protokol=liint
+                # print(self.loged)
+                if self.loged=={}:
+                    self.do_toast("no data loaded")
+        
 
         else:
             self.protokol[0]=0
-            self.protokol[2]=0
+            # self.protokol[2]=0
             self.ids.first.disabled=False
+            self.send()
+
     def on_reset(self):
         self.protokol=[0,0,0,0,0,0,0,0,0,0,0,0]
         self.loger.clear()
@@ -193,7 +198,7 @@ class Ml(FloatLayout):
         self.ids.root_save.ilang=10
     def load(self,a,b):
         
-        if b !=[1,1,1,1]:
+        if b ==[1,1,1,1]:
             self.storage_num=a
             f=open("{}.json".format(a),"r")
             l=json.load(f)
@@ -243,26 +248,33 @@ class Ml(FloatLayout):
     def lts(self,data):
         return str(data)[1:-1].replace(" ","")
     def on_protokol(self,a,b):
-        data=self.lts(self.protokol)
-        self.data_out="*{}#\n".format(data)
-        self.uart.write(self.data_out)
+        
         if self.protokol[1]==0 and self.protokol[0]==1: #start manual mode
             self.loger[self.waktu]=self.data_out
         if self.line_f==[] and self.protokol[9]==1:
             self.make_line_f()
             self.ids.first.disabled=True
+        if self.protokol[1]==1:
+            data=self.lts(self.protokol)
+            self.data_out="*{}#\n".format(data)
+            self.uart.write(self.data_out)
+
     def make_line_f(self):
         pa=self.ids.chart.plot_area
         self.line_f=[pa.x+pa.width*self.count/20/60,pa.y,pa.x+pa.width*self.count/20/60,pa.y+pa.height]
         self.ids.chart.line4=self.line_f#[pa.x+pa.width*self.count/20/60,pa.y,pa.x+pa.width*self.count/20/60,pa.y+pa.height]
-    def send(self,data):
-        pass
+    def send(self):
+        if self.protokol[1]==0:
+            data=self.lts(self.protokol)
+            self.data_out="*{}#\n".format(data)
+            self.uart.write(self.data_out)
+
     def on_detik(self,a,b):
         self.count+=1
         chart=self.ids.chart
         pa=self.ids.chart.plot_area
-        point_et=[pa.x+pa.width*self.count/20/60,pa.y+pa.height*self.et/300]
-        point_bt=[pa.x+pa.width*self.count/20/60,pa.y+pa.height*self.bt/300]
+        point_et=[pa.x+pa.width*self.count/20/60,pa.y+pa.height*int(self.et)/300]
+        point_bt=[pa.x+pa.width*self.count/20/60,pa.y+pa.height*int(self.bt)/300]
         self.line_bt+=point_bt
         self.line_et+=point_et
         chart.line5=self.line_bt

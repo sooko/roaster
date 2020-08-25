@@ -43,7 +43,7 @@ class Uart(Widget):
         # print(self.readbaris)
         pass
     def write(self,data):
-        # print(data)s
+        print(data)
         if self.ser.is_open:
             self.ser.write(data.encode())
     
