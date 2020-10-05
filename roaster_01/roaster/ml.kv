@@ -1,0 +1,290 @@
+<ToggleBtnPopSave>:
+    font_size:self.height/4
+    bold:True
+    background_color:0,0,0,0
+    color:0,0,0,1
+    warna:1,1,1,.5
+    warna1:1,1,1,.5
+    canvas.before:
+        Color:
+            rgba:root.warna
+        Rectangle:
+            size:self.size
+            pos:self.pos
+        Color:
+            rgba:root.warna1
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    on_press:self.warna1=.51,.51,.51,1
+    on_release:self.warna1=root.warna
+
+    
+<PopStorage>:
+    on_parent:self.dissmis()
+    name:"SAVE"
+    pos_hint: {"center_x":.5,"center_y":.5}
+    Button
+        pos_hint: {"center_x":.5,"center_y":.5 }
+        background_color:0,0,0,.5
+        on_press:self.parent.dissmis()
+    BoxVer
+        padding:dp(5)
+        spacing:dp(1)
+        size_hint: .5,.5
+        pos_hint: {"center_x":.5,"center_y":.5 }
+        canvas:
+            Color:
+                rgba:0,0,0,1
+            Rectangle:
+                size:self.size
+                pos:self.pos
+        Label:
+            bold:True
+            font_size: self.height/2
+            canvas.before:
+                Color:
+                    rgba:1,1,1,1
+                Rectangle:
+                    size:self.size
+                    pos:self.pos
+            text:root.name
+            size_hint:1,.15
+            color:0,0,0,1
+        GridLayout:
+            spacing:dp(1)
+            cols:3
+            id:parent_btn
+            ToggleBtnPopSave:
+                text:"1"
+                on_release:root.choose(self)
+            ToggleBtnPopSave:
+                text:"2"
+                on_release:root.choose(self)
+            ToggleBtnPopSave:
+                text:"3"
+                on_release:root.choose(self)
+            ToggleBtnPopSave:
+                text:"4"
+                on_release:root.choose(self)
+            ToggleBtnPopSave:
+                text:"5"
+                on_release:root.choose(self)
+            ToggleBtnPopSave:
+                text:"6"
+                on_release:root.choose(self)
+            ToggleBtnPopSave:
+                text:"7"
+                on_release:root.choose(self)
+            ToggleBtnPopSave:
+                text:"8"
+                on_release:root.choose(self)
+            ToggleBtnPopSave:
+                text:"9"
+                on_release:root.choose(self)
+
+<PopChoose>:
+    on_parent:self.dissmis()
+    name:"HEATER STEP"
+    pos_hint: {"center_x":.5,"center_y":.5}
+    Button
+        pos_hint: {"center_x":.5,"center_y":.5 }
+        background_color:0,0,0,.5
+        on_press:self.parent.dissmis()
+    BoxVer
+        padding:dp(3)
+        spacing:dp(1)
+        size_hint: .5,.6
+        pos_hint: {"center_x":.5,"center_y":.5 }
+        canvas:
+            Color:
+                rgba:0,0,0,1
+            Rectangle:
+                size:self.size
+                pos:self.pos
+        Label:
+            bold:True
+            font_size: self.height/2
+            canvas.before:
+                Color:
+                    rgba:1,1,1,1
+                Rectangle:
+                    size:self.size
+                    pos:self.pos
+            text:root.name
+            size_hint:1,.15
+            color:0,0,0,1
+        GridLayout:
+            spacing:dp(1)
+            cols:root.cols
+            id:parent_button
+<ToggleBtnPopChoose>:
+    font_size: self.height/5
+    color:0,0,0,1
+    group:"heater"
+    background_color:0,0,0,0
+    canvas.before:
+        Color:
+            rgba:[1,1,1,1] if self.state=="normal" else [1,1,1,.5]
+        Rectangle:
+            size:self.size
+            pos:self.pos
+
+
+
+<MainLayout>:
+    BoxVer
+        spacing:dp(1)
+        TopPanel
+            TgMode
+                value:root.protokol[1]
+                on_value:
+                    root.protokol[1]=self.value
+                    root.set_mode()
+            Logo
+            BtnLock
+                id:lock
+            LabelDisplay
+                name:"RoR"
+                value:"{:.1f}".format(root.ror)
+            LabelDisplay
+                name:"ET"
+                value:"{:.1f}".format(root.et)
+            LabelDisplay
+                name:"BT"
+                value:"{:.1f}".format(root.bt)
+            LabelDisplay
+                name:"TIMER"
+                size_hint: None,1
+                width:rightpanel.width
+                value:"{:02d}:{:02d}".format(root.menit,root.detik)
+        CenterPanel
+            Chart
+                id:chart
+            CenterRightPanel
+                id:rightpanel
+                BtnPlay
+                    value:root.protokol[0]
+                    on_value:
+                        root.protokol[0]=self.value
+                        root.play()
+                BtnReset
+                    on_press:
+                        root.reset()
+                BtnSave
+
+                    on_press:
+                        root.do_save()
+                        
+                        
+                BtnLoad
+                    id:btnload
+                    on_press:
+                        popload.open()
+                BtnFirst
+                    id:first_btn
+                    value:root.protokol[9]
+                    on_press:
+                        root.make_line_f()
+                        self.disabled=True
+                    on_value:
+                        root.protokol[9]=self.value
+                        root.prepare_to_send()
+                    
+        BottomPanel
+            BtnCharge
+                value:root.protokol[2]
+                on_value:
+                    root.protokol[2]=self.value
+                    root.prepare_to_send()
+            BtnDrum
+                value:root.protokol[3]
+                on_value:
+                    root.protokol[3]=self.value
+                    root.prepare_to_send()
+
+
+            BtnHeater
+                value:root.protokol[4]
+                on_value:
+                    root.protokol[4]=self.value
+                    root.prepare_to_send()
+                id:heater
+                on_press:
+                    popheater.open()
+            BtnAirFlow_1
+                id:air_flow
+                value:root.protokol[6]
+                on_press:
+                    popairflow.open()
+                on_value:
+                    root.protokol[6]=self.value
+                    root.prepare_to_send()
+
+            BtnDisCharge
+                value:root.protokol[7]
+                on_value:
+                    root.protokol[7]=self.value
+                    root.prepare_to_send()
+            BtnCooling
+                value:root.protokol[8]
+                on_value:
+                    root.protokol[8]=self.value
+                    root.prepare_to_send()
+    PopChoose:
+        id:popheater
+        on_value:
+            heater.value=self.value
+            self.dissmis()
+    PopChoose:
+        name:"AIR FLOW STEP"
+        cols:4
+        len_widget:4
+        id:popairflow
+        on_value:
+            air_flow.value=self.value
+            self.dissmis()
+    PopStorage:
+        id:popsave
+        on_parent:
+            self.dissmis()
+            self.choose=root.save
+
+
+    PopStorage:
+        name:"LOAD"
+        id:popload
+        on_parent:
+            self.dissmis()
+            self.choose=root.load
+    
+    
+    Label:
+        warna:0,0,0,0
+        color:1,1,1,.8
+        id:toastlabel
+        size_hint:None,None
+        size:self.texture_size[0],self.texture_size[1]    #.4,.05
+        pos_hint:{"center_x":.5,"center_y":.3}
+        color:0,0,0,1
+        text:root.toast
+        on_text:self.warna =[0,0,0,.5] if self.text !=""  else [0,0,0,0]
+        canvas.before:
+            Color:
+                rgba:self.warna
+            RoundedRectangle:
+                size:self.texture_size[0]+dp(50),self.texture_size[1]+dp(5)
+                pos:self.pos[0]-dp(25),self.pos[1]-dp(2)
+    FloatLayout
+        pos_hint: {"right":lock.value,"center_y":.5}     
+        Button
+            background_color:0,0,0,0
+            pos_hint: {"center_x":.5,"center_y":.5}
+        Button
+            size_hint: None,None
+            size:lock.size
+            pos:lock.pos if lock.value==1 else self.parent.pos
+            on_press:lock.value=0
+            background_color:0,0,0,0
+            
+

@@ -1,0 +1,115 @@
+<BtnHeater>:
+    color:0,0,0,1
+    warna:1,1,1,1
+    canvas.before:
+        Color:
+            rgba:self.warna
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    on_press:
+        self.warna=[1,1,1,.7]
+        root.dispatch("on_open_selection")
+    on_release:self.warna=[1,1,1,1]
+<BtnStep>:
+    canvas.before:
+        Color:
+            rgba:1,1,1,1
+        Rectangle:
+            size:self.size
+            pos:self.pos
+<LabelDisplay@BoxVer>:
+    color:0,0,0,1
+    canvas.before:
+        Color:
+            rgba:1,1,1,1
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    name:"ET"
+    value:""
+    Label:
+        size_hint:1,.5
+        text:root.name
+        color:root.color
+        font_size:self.height/1.2
+        bold:True
+    Label:
+        text:root.value
+        color:root.color
+        font_size:self.height/1.2
+
+<LabelDisplayTg@BoxVer>:
+    color:0,0,0,1
+    canvas.before:
+        Color:
+            rgba:1,1,1,1
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    name:"ET"
+    value:""
+    Label:
+        size_hint:1,.5
+        text:root.name
+        color:root.color
+        font_size:self.height/1.2
+        bold:True
+    Label:
+        text:root.value
+        color:root.color
+        font_size:self.height/2
+
+<BoxVer@BoxLayout>:
+    orientation:"vertical"
+<TopPanel@BoxLayout>:
+    spacing:dp(1)
+    size_hint:1,.125
+<CenterPanel@BoxLayout>
+    spacing:dp(1)
+<CenterRightPanel@BoxVer>
+    size_hint:.167,1
+    id:ctrl
+    spacing:dp(1)
+<BottomPanel@BoxLayout>
+    size_hint:1,.125
+    spacing:dp(1)
+    id:root_ctrl
+<TgMode>:
+    values:["MANUAL","AUTO"]  
+    on_state:
+        root.value=1 if self.state=="down" else 0
+    on_value:
+        self.state="down" if self.value==1 else "normal"
+    LabelDisplayTg
+        name:"MODE"
+        value:root.values[root.value]
+        size_hint: None,None
+        size:root.size
+        pos:root.pos
+
+<TgImg>:
+    canvas.before:
+        Color:
+            rgba:root.bg_rgba
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    Label
+        color:0,0,0,1
+        size_hint:None,None
+        text:root.flag
+        size:dp(10),dp(10)
+        right:self.parent.right-dp(5)
+        top:self.parent.top-dp(5)
+        
+<Logo>:
+    canvas.before:
+        Color:
+            rgba:1,1,1,1 
+        Rectangle:
+            size:self.size
+            pos:self.pos
+    size_hint:2,1
+
+
