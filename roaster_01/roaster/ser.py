@@ -38,3 +38,8 @@ class Ser(Serial):
     def write_data(self,data):
         if self.is_open:
             self.write(data)
+        else:
+            self.report_eror("serial not available")
+    def report_eror(self,er):
+        pass
+        

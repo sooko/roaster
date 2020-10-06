@@ -233,6 +233,7 @@ class MainLayout(FloatLayout):
         super(MainLayout,self).__init__(**kwargs)
         Clock.schedule_once(self.delay,1)
         self.serial.get_data=self.get_data
+        self.serial.report_eror=self.report_eror
         # Clock.schedule_interval(self.simulator,.05)
     # def load_storage_state(self):
     #     # f=open("{}")
@@ -314,6 +315,18 @@ class MainLayout(FloatLayout):
                     self.protokol=ast.literal_eval(p)
                 if self.waktu==self.time_stoped:
                     self.protokol[0]=0
+                    self.protokol[2]=0
+                    self.protokol[3]=0
+                    self.protokol[4]=0
+                    self.protokol[5]=0
+                    self.protokol[6]=0
+                    self.protokol[7]=0
+                    self.protokol[8]=0
+                    self.protokol[9]=0
+                    self.ids.first_btn.disabled=False
+                    
+                    
+                    
 
 
 
@@ -335,6 +348,8 @@ class MainLayout(FloatLayout):
     def lts(self,data):
         return str(data)[1:-1].replace(" ","")
     def prepare_to_send(self):
+        if self.protokol[9]==1:
+            self.make_line_f()
         if self.protokol[1]==0:
             data_ready="*"+self.lts(self.protokol)+"#"+"\n"
             print(data_ready)
@@ -358,10 +373,21 @@ class MainLayout(FloatLayout):
             self.ids.chart.line4=[]
             self.ids.chart.line5=[]
             self.ids.chart.line6=[]
+            self.ids.first_btn.disabled=False
         
 
         else:
             self.time_stop=self.waktu
+            self.protokol[2]=0
+            self.protokol[3]=0
+            self.protokol[4]=0
+            self.protokol[5]=0
+            self.protokol[6]=0
+            self.protokol[7]=0
+            self.protokol[8]=0
+            self.protokol[9]=0
+            # self.ids.first_btn.disabled=False
+            
         data_ready="*"+self.lts(self.protokol)+"#"+"\n"
         print(data_ready)
         self.serial.write_data(data_ready.encode())
@@ -399,8 +425,14 @@ class MainLayout(FloatLayout):
         self.toast=data 
         Clock.schedule_once(self.clear_toast,time_out)
         print(self.toast)
+
     def clear_toast(self,dt):
         self.toast=""
+    def report_eror(self,er):
+        self.do_toast(er,time_out=1)
+        Clock.schedule_once(self.clear_eror,1)
+    def clear_eror(self,dt):
+        self.protokol[0]=0
     def save(self,instance):
         self.ids.popsave.dissmis()
         d={"loger":self.loger,"line_et":self.line_et,"line_bt":self.line_bt,"stop":self.time_stop,"line_f":self.line_f}
